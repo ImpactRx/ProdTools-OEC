@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+  <!-- CONFIG -->
+  <beans>
+  <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+   <property name="jndiName"><value>java:BacklotToolPool</value></property>
+  </bean>
+  <bean id="dataSourceIn" class="com.targetrx.project.oec.util.AuditedDataSource">
+    <property name="dataSource"><ref bean="dataSource"/></property>
+  </bean>  
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+	abstract="false" singleton="true" lazy-init="default"
+	autowire="default" dependency-check="default">
+    <property name="basename">
+        <value>messages</value>
+    </property>
+  </bean>
+
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+   <property name="hibernateProperties">
+    <props>
+     <prop key="show_sql">false</prop>
+     <prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+     <prop key="hibernate.cglib.use_reflection_optimizer">false</prop>
+     <prop key="hibernate.default_schema">TRX_LOAD</prop>
+	 <prop key="hibernate.query.factory_class">org.hibernate.hql.classic.ClassicQueryTranslatorFactory</prop>
+    </props>
+   </property>
+   <property name="dataSource">
+    <ref bean="dataSource"/>
+   </property>
+  </bean>
+
+	<!-- ********** JDBC DAOs ********** -->
+  <bean name="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+   <property name="dataSource"><ref bean="dataSource"/></property>
+  </bean>
+
+  <bean id="dictionaryDao" class="com.targetrx.db.trxload.service.dao.SQLDictionarySpringDao">
+     <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+     <property name="jdbcTemplate"><ref bean="jdbcTemplate"/></property>
+  </bean>
+  
+  <bean id="dictionaryService" class="com.targetrx.db.trxload.service.SQLDictionaryServiceSpringImpl">
+   <property name="dictionaryDao"><ref local="dictionaryDao"/></property>
+  </bean>
+
+  <bean id="codes" class="com.targetrx.project.oec.service.CodeDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>  
+  <bean id="codebook" class="com.targetrx.project.oec.service.CodeBookDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>  
+  <bean id="net" class="com.targetrx.project.oec.service.NetDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>
+  <bean id="user" class="com.targetrx.project.oec.service.UserDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>
+  <bean id="programs" class="com.targetrx.project.oec.service.ProgramFactsDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>
+  <bean id="responses" class="com.targetrx.project.oec.service.ResponseDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>
+  <bean id="pq" class="com.targetrx.project.oec.service.ProgramOecQuestionsDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>
+  <bean id="cbg" class="com.targetrx.project.oec.service.CodebookGroupDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>
+  <bean id="autocode" class="com.targetrx.project.oec.service.AutoCodeDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>
+  <bean id="monthend" class="com.targetrx.project.oec.service.MonthEndDaoImpl">
+			<property name="dataSource">
+				<ref local="dataSourceIn" />
+			</property>
+  </bean>
+  <bean id="client" class="com.targetrx.project.oec.service.ClientDaoImpl">
+				<property name="dataSource">
+					<ref local="dataSourceIn" />
+				</property>
+  </bean>
+  <bean id="custom" class="com.targetrx.project.oec.service.CustomMapDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSourceIn" />
+		</property>
+  </bean>     
+</beans>

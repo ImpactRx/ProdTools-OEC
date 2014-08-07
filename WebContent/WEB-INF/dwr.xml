@@ -1,0 +1,55 @@
+<!DOCTYPE dwr PUBLIC  "-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN" "http://www.getahead.ltd.uk/dwr/dwr10.dtd">
+<dwr>
+  <allow>
+  	<create creator="new" javascript="JDate">
+      <param name="class" value="java.util.Date"/>
+    </create>
+    <create creator="new" javascript="UploadMonitor">
+			<param name="class" value="com.targetrx.upload.UploadMonitor"/>
+		</create>
+		<create creator="new" javascript="eLoader">
+		 	<param name="class" value="com.targetrx.project.oec.util.ExcelLoader"/>
+    </create>
+    <create creator="spring" javascript="codes">
+			 <param name="beanName" value="codes"/>
+    </create>
+    <create creator="spring" javascript="codebooks">
+			 <param name="beanName" value="codebook"/>
+    </create>
+    <create creator="spring" javascript="nets">
+			 <param name="beanName" value="net"/>
+    </create>
+    <create creator="spring" javascript="users">
+			 <param name="beanName" value="user"/>
+    </create>
+    <create creator="spring" javascript="programs">
+			 <param name="beanName" value="programs"/>
+    </create> 
+    <create creator="spring" javascript="responses">
+			 <param name="beanName" value="responses"/>
+    </create>
+    <create creator="spring" javascript="pq">
+			 <param name="beanName" value="pq"/>
+    </create>
+    <create creator="spring" javascript="cbg">
+			 <param name="beanName" value="cbg"/>
+    </create> 
+    <create creator="spring" javascript="autocode">
+			 <param name="beanName" value="autocode"/>
+    </create>
+    <create creator="spring" javascript="monthend">
+			 <param name="beanName" value="monthend"/>
+    </create>
+    <create creator="spring" javascript="client">
+			<param name="beanName" value="client"/>
+    </create>
+    <create creator="spring" javascript="custom">
+			<param name="beanName" value="custom"/>
+    </create>
+    <convert converter="bean" match="com.targetrx.project.oec.bo.*"/>
+    <convert converter="bean" match="com.targetrx.project.oec.data.*"/>
+    <convert converter="bean" match="trx.bean.response.RespondentReviewRow"/>
+    <convert converter="bean" match="trx.bean.response.ResponsePk"/>
+    <convert converter="bean" match="trx.bean.response.QuestionResponseReview"/>
+  </allow>
+</dwr>

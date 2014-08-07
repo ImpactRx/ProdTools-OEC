@@ -1,0 +1,177 @@
+#autocode
+{
+	position: absolute;
+	top: 32px;
+	left: 290px;
+}
+#dictionarya
+{
+	position: absolute;
+	top: 90px;
+	left: 5px;	 
+}
+#exceptiona
+{
+	position: absolute;
+	top: 290px;
+	left: 5px;	 
+}
+#verifya
+{
+	position: absolute;
+	top: 535px;
+	left: 350px;
+}
+#dicstatus
+{
+	position: absolute;
+	top: 32px;
+	left: 10px;
+}
+#dictionary
+{
+	position: absolute;
+	top: 60px;
+	left: 40px;	 
+}
+#oec
+{
+	position: absolute;
+	top: 220px;
+	left: 40px;	
+}
+#master
+{
+    	position: absolute;
+	top: 385px;
+	left: 40px;
+}
+#filter
+{
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: #00529B;
+}
+#buttons
+{
+    position: absolute;
+    top: 35px;
+    left: 5px;
+}
+#verify
+{
+	position: absolute;
+	top: 355px;
+	left: 350px;
+}
+#overexception
+{
+	position: absolute;
+	top: 550px;
+	left: 350px;
+	visibility: hidden;
+}
+
+
+
+
+a.button
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+        visibility: visible;
+}
+
+a.button:hover
+{
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #999999;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+a.button:active
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+a.buttonU
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+
+a.buttonU:hover
+{
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #999999;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+a.buttonU:active
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+a.close
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	text-decoration: none;
+	font-size: 10px;
+        visibility: visible;
+}
+
+a.close:hover
+{
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #999999;
+	text-decoration: none;
+	font-size: 10px;
+}
+a.close:active
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	text-decoration: none;
+	font-size: 10px;
+}
+#navAdmin
+{
+    visibility: hidden;
+}
+#autocode
+{
+	position: absolute;
+	top: 250px;
+	left: 280px;
+}
+#cloneButton
+{
+        position: absolute;
+	top: 250px;
+	left: 400px;	
+}

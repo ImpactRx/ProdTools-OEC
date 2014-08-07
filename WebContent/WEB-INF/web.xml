@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+ <display-name>Open Ended Coding Management</display-name>
+ <description>TargetRx Tools Open Ended Coding Applications</description>
+ <context-param>
+   <param-name>contextConfigLocation</param-name>
+   <param-value>/WEB-INF/applicationContext.xml</param-value>
+ </context-param>
+ <!-- ====================================================================== -->
+ <!--                             Listeners                                  -->
+ <!-- ====================================================================== -->
+ <listener>
+   <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+ </listener>
+ 
+ <!-- ====================================================================== -->
+ <!--                             Servlets                                   -->
+ <!-- ====================================================================== -->
+  <servlet>
+    <servlet-name>AppConfigServlet</servlet-name>
+	<servlet-class>com.targetrx.common.util.AppConfigServlet</servlet-class>
+	<load-on-startup>1</load-on-startup>
+  </servlet>
+ <servlet>
+    <servlet-name>OECFilter</servlet-name>
+    <servlet-class>com.targetrx.project.oec.servlet.OECFilter</servlet-class>
+    <load-on-startup>1</load-on-startup>
+ </servlet>
+ <servlet>
+    <servlet-name>ExportFilter</servlet-name>
+    <servlet-class>com.targetrx.project.oec.servlet.ExportServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+ </servlet>
+ <servlet>
+    <servlet-name>ChangeFilter</servlet-name>
+    <servlet-class>com.targetrx.project.oec.servlet.ChangeServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+ </servlet>
+ <servlet>
+    <servlet-name>dwr</servlet-name>
+    <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
+    <init-param>
+  	<param-name>debug</param-name>
+        <param-value>true</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+ </servlet>
+    <servlet>
+        <servlet-name>Change</servlet-name>
+        <servlet-class>com.targetrx.project.oec.servlet.ChangeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+   <servlet-name>ChangeFilter</servlet-name>
+   <url-pattern>/change</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+   <servlet-name>ExportFilter</servlet-name>
+   <url-pattern>/export</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+   <servlet-name>OECFilter</servlet-name>
+   <url-pattern>/main</url-pattern>
+ </servlet-mapping>
+ <!-- servlet-mapping>
+    <servlet-name>main</servlet-name>
+    <url-pattern>*.html</url-pattern>
+ </servlet-mapping --> 
+ <servlet-mapping>
+    <servlet-name>dwr</servlet-name>
+    <url-pattern>/dwr/*</url-pattern>
+ </servlet-mapping>	
+  
+  <!-- ====================================================================== -->
+	<!--                             SECURITY                                   -->
+  <!-- ====================================================================== -->
+    <servlet-mapping>
+        <servlet-name>Change</servlet-name>
+        <url-pattern>/Change</url-pattern>
+    </servlet-mapping>
+    <security-constraint>
+   <web-resource-collection>
+   <web-resource-name>Open Ended Coding Management</web-resource-name>
+   <description>Open Ended Coding Management Web Interface</description>
+   <url-pattern>/main</url-pattern>  
+   </web-resource-collection>
+   <auth-constraint>
+    <role-name>wl-OecPowerUser</role-name>
+    <role-name>wl-OecUser</role-name>
+    <role-name>wl-OecSuperUser</role-name>
+	<role-name>IT Dept</role-name>
+   </auth-constraint>
+  </security-constraint>
+
+	<login-config>
+	 <auth-method>BASIC</auth-method>
+	</login-config>
+
+	<security-role>
+	 <description>OEC Power User</description>
+	 <role-name>wl-OecPowerUser</role-name>
+	</security-role>
+
+	<security-role>
+	 <description>Oec Super User</description>
+	 <role-name>wl-OecSuperUser</role-name>
+	</security-role>
+
+	<security-role>
+	 <description>Oec User</description>
+	 <role-name>wl-OecUser</role-name>
+	</security-role>
+
+	<security-role>
+		<description>Allows access to application</description>
+		<role-name>IT Dept</role-name>
+	</security-role>
+</web-app>

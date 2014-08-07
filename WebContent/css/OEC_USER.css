@@ -1,0 +1,73 @@
+a.button
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+  visibility: hidden;
+}
+
+a.button:hover
+{
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #999999;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+a.button:active
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+a.buttonU
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+
+a.buttonU:hover
+{
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #999999;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+a.buttonU:active
+{
+	color: #000000;
+	font-weight: bold;
+	background-color: #CCCCCC;
+	border-style: outset;
+	text-decoration: none;
+	font-size: 11px;
+}
+#navP
+{
+    visibility: hidden;
+}
+#navA
+{
+    visibility: visible;
+}
+#nav
+{
+    visibility: hidden;
+}
+#navAdmin
+{
+    visibility: hidden;
+}
