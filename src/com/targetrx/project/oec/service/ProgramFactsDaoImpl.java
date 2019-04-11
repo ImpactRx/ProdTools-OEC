@@ -104,7 +104,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         JdbcTemplate jdbctemplate = getJdbcTemplate();
         String s1 = "select distinct program_label, program_event_id, fielding_period from inventory.program_facts where study_type_code = '" + s + "' "+
                 " and fielding_period >= to_date('"+pDate+"','mm/dd/yyyy') order by program_label, fielding_period desc";
-        //System.out.println(s1);
+        
+        log.debug("SQL #getAllProgramLabelsByType: "+s1);
+        
         try
         {
             obj = jdbctemplate.query(s1, new RowMapperResultReader(new ProgramLabelMapper()));
@@ -238,6 +240,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         {
             sq1 = sq1+endSql;
         }
+        
+        log.debug("SQL #getAllProgramLabelsByTypeAnDate: "+sq1);
+        
         try
         {
             //System.out.println(sq1);
@@ -303,6 +308,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         String s = "select distinct oec_response_util.get_oec_file_prefix(program_label,";
         s = s + " fielding_period, supplement_code, study_type_code), study_type_code from program_facts";
         s = s + " where oec_status_code = 'A'";
+        
+        log.debug("SQL #getProgramFacts: "+s);
+        
         try
         {
             obj = jdbctemplate.query(s, new RowMapperResultReader(new ProgramRowMapper()));
@@ -389,14 +397,38 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         s3 = s3 + "      'Q'||survey_question_label";
         s3 = s3 + " END";
         s3 = s3 + " order by label";
-        log.debug("SQL #getGroupName: "+s3);
+        
+        String s4 =        
+	        "select a.question_id, " + 
+	        "CASE    WHEN GROUP_QUESTION_LABEL IS NOT NULL THEN 'W'||group_question_label || ' / Q' ||survey_question_label " + 
+	        "ELSE      'Q'||survey_question_label END || ' ('||count(*)||')' as label  " +
+	        "from   oec_response_staging  a where  a.program_event_id in (select program_event_id " +       
+	        "from   program_facts " +       
+	        "where program_label = '" + s + "' " +
+	        ")  " +
+	        "AND lock_flag = 'N' " + 
+	        "AND status_code = 'new' ";
+	        
+	        if(s2.equalsIgnoreCase("false"))
+	        	s4 += " AND tag_type_code IS NOT NULL ";
+	        else
+	        	s4 += " AND tag_type_code IS NULL ";
+	        	       
+	        s4 += "group by a.question_id,  " +
+	        "CASE      WHEN GROUP_QUESTION_LABEL IS NOT NULL " + 
+	        "THEN     'W'||group_question_label || ' / Q' ||survey_question_label ELSE 'Q'||survey_question_label END " + 
+	        "order by label";
+        
+        
+        log.debug("SQL #getGroupName: "+s4);
+
         try
         {
-            obj = jdbctemplate.query(s3, new RowMapperResultReader(new ReponseRowMapper()));
+            obj = jdbctemplate.query(s4, new RowMapperResultReader(new ReponseRowMapper()));
         }
         catch(Exception exception)
         {
-            log.error("SQL:: " + s3 + "\n" + exception.getMessage(), exception);
+            log.error("SQL:: " + s4 + "\n" + exception.getMessage(), exception);
         }
         for(int i = 0; i < ((List) (obj)).size(); i++)
         {
@@ -426,6 +458,7 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         Object obj = new ArrayList();
         JdbcTemplate jdbctemplate = getJdbcTemplate();
         String s2 = "";
+        
         s2 = "select distinct a.question_id,";
         s2 = s2 + " b.parameter_no,";
         s2 = s2 + " initcap(b.category_code)";
@@ -434,24 +467,13 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         s2 = s2 + " where  a.question_id = " + s1;
         s2 = s2 + " and    a.program_event_id in (select program_event_id ";
         s2 = s2 + "     from   program_facts ";
-        s2 = s2 + "     where  (study_type_code <> 'AUDIT'";
-        s2 = s2 + "     AND";
-        s2 = s2 + "     program_label = '" + s + "')";
-        s2 = s2 + "     OR";
-        s2 = s2 + "     (study_type_code = 'AUDIT'";
-        s2 = s2 + "     AND";
-        s2 = s2 + "     supplement_code = 'C'";
-        s2 = s2 + "     AND";
-        s2 = s2 + "     program_label = '" + s + "')";
-        s2 = s2 + "     OR";
-        s2 = s2 + "     (study_type_code = 'AUDIT'";
-        s2 = s2 + "     AND";
-        s2 = s2 + "     supplement_code <> 'C'";
-        s2 = s2 + "     AND";
-        s2 = s2 + "     fielding_period =  get_fielding_period('" + s + "')))";
+        s2 = s2 + "     where  program_label = '" + s + "')";
         s2 = s2 + " and    a.question_id = b.question_id ";
         s2 = s2 + " order by ";
         s2 = s2 + " b.parameter_no asc";
+        
+        log.debug("SQL #getMarkets: "+s2);
+        
         try
         {
             obj = jdbctemplate.query(s2, new RowMapperResultReader(new ParameterRowMapper()));
@@ -495,6 +517,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         s1 = s1 + " where  p.program_event_id = q.program_event_id";
         s1 = s1 + " and oec_response_util.get_oec_file_prefix(program_label, fielding_period, supplement_code, study_type_code) = '" + s + "'";
         s1 = s1 + " and p.oec_status_code = 'A'";
+        
+        log.debug("SQL #getProgramEvent: "+s1);
+        
         try
         {
             obj = jt.query(s1, new RowMapperResultReader(new StringRowMapper()));
@@ -526,6 +551,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         sql = sql +" where  p.program_event_id = q.program_event_id";
         sql = sql +" and oec_response_util.get_oec_file_prefix(program_label, fielding_period, supplement_code, study_type_code) = '"+pProgramLabel+"'";
         sql = sql +" and p.oec_status_code = 'A'";
+        
+        log.debug("SQL #getProgramEvents: "+sql);
+        
         try 
         {
             lst =  jt.query(sql, new RowMapperResultReader(new StringRowMapper()));
@@ -572,21 +600,7 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
             sql = sql+"  where  a.question_id = "+pQuestionId;
             sql = sql+"  and    a.program_event_id in (select program_event_id";
             sql = sql+"        from   program_facts";
-            sql = sql+"        where  (study_type_code <> 'AUDIT'";
-            sql = sql+"       AND";
-            sql = sql+"        program_label = '"+pProgramLabel+"')";
-            sql = sql+"        OR";
-            sql = sql+"       (study_type_code = 'AUDIT'";
-            sql = sql+"        AND";
-            sql = sql+"        supplement_code = 'C'";
-            sql = sql+"        AND";
-            sql = sql+"       program_label = '"+pProgramLabel+"')";
-            sql = sql+"        OR";
-            sql = sql+"       (study_type_code = 'AUDIT'";
-            sql = sql+"        AND";
-            sql = sql+"        supplement_code <> 'C'";
-            sql = sql+"        AND";
-            sql = sql+"        fielding_period = get_fielding_period('"+pProgramLabel+"')))";
+            sql = sql+"        where  program_label = '"+pProgramLabel+"')";
             sql = sql+"  AND a.lock_flag != 'Y'";
             sql = sql+"  AND a.status_code = 'new'";
             if (pTag.equalsIgnoreCase("false"))
@@ -606,7 +620,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
             sql = sql+"  END,";
             sql = sql+"  a.question_id";
             sql = sql + " order by label";
+            
             log.debug("SQL #getGroupList: "+sql);
+            
             try 
             {
                 lst =  jt.query(sql, new RowMapperResultReader(new GroupRowMapperNoParams()));
@@ -637,21 +653,7 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
             sql = sql+" and    a.par"+paraNo+"_parameter_id = b.parameter_id";
             sql = sql+" and    a.program_event_id in (select program_event_id";
             sql = sql+"       from   program_facts";
-            sql = sql+"       where  (study_type_code <> 'AUDIT'";
-            sql = sql+"       AND";
-            sql = sql+"       program_label = '"+pProgramLabel+"')";
-            sql = sql+"       OR";
-            sql = sql+"      (study_type_code = 'AUDIT'";
-            sql = sql+"       AND";
-            sql = sql+"       supplement_code = 'C'";
-            sql = sql+"       AND";
-            sql = sql+"       program_label = '"+pProgramLabel+"')";
-            sql = sql+"       OR";
-            sql = sql+"      (study_type_code = 'AUDIT'";
-            sql = sql+"       AND";
-            sql = sql+"       supplement_code <> 'C'";
-            sql = sql+"       AND";
-            sql = sql+"       fielding_period = get_fielding_period('"+pProgramLabel+"')))";
+            sql = sql+"       where  program_label = '"+pProgramLabel+"')";
             sql = sql+" AND a.lock_flag != 'Y'";
             sql = sql+" AND a.status_code = 'new'";
             if (pTag.equalsIgnoreCase("false"))
@@ -674,7 +676,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
             sql = sql+" b.parameter_value,";
             sql = sql+" a.par"+paraNo+"_parameter_id";
             sql = sql + " order by label";
+            
             log.debug("SQL #getGroupList: "+sql);
+            
             try
             {
                 lst =  jt.query(sql, new RowMapperResultReader(new GroupRowMapper()));
@@ -684,6 +688,7 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
             }
         }
         return lst;
+
     }
     class GroupRowMapper implements RowMapper 
     {
@@ -763,6 +768,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
     		"where fielding_period is not null " +
     		"and fielding_period >= ? " +
     		"order by fielding_period";
+
+    	log.debug("SQL #getDistinctFieldingPeriods: "+sql);
+    	
     	try
     	{
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
@@ -794,6 +802,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
             "and fielding_period is not null "+
             "group by fielding_period " +
             "order by fielding_period desc";
+        
+    	log.debug("SQL #getActiveMonthAndYear: "+sql);
+
         
         try
         {
@@ -832,6 +843,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
             "and fielding_period = to_date(?, 'MM/DD/YYYY') "+
             "group by study_type_code " +
             "order by study_type_code";
+        
+        log.debug("SQL #getStudyTypesFromPeriod: "+sql);
+        
         try
         {
             JdbcTemplate jt = getJdbcTemplate();
@@ -874,6 +888,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
             "and fielding_period = to_date(?, 'MM/DD/YYYY') " +
             "and study_type_code = ? "+
             "order by program_label";
+        
+        log.debug("SQL #getProgramsFromPeriodAndStudyType: "+sql);
+        
         try
         {
             JdbcTemplate jt = getJdbcTemplate();
@@ -963,6 +980,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
                 " and a.fielding_period = to_date('"+pDate+"','mm/dd/yyyy')"+
                 "   and b.program_event_id = a.program_event_id"+
                 "   order by a.program_event_id";
+        
+        log.debug("SQL #findProgramAndEvents: "+sql);
+        
         return jt.query(sql, new RowMapper() {
             public Object mapRow(ResultSet rs, int rowNum) throws SQLException 
             {
@@ -1023,6 +1043,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
                 " and program_event_id in ("+pPeids+")"+
                 " order by m_value	";
         }
+        
+        log.debug("SQL #getMarketsByPeid: "+sql);
+        
         try 
         {
             lst = jt.query(sql, new RowMapperResultReader(new MarketMapper()));
@@ -1090,6 +1113,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         {
             sql = sql+endSql;
         }
+        
+        log.debug("SQL #getMarketsByDateAndType: "+sql);
+        
         try 
         {
             lst = jt.query(sql, new RowMapperResultReader(new MarketMapper()));
@@ -1144,6 +1170,9 @@ public class ProgramFactsDaoImpl extends JdbcDaoSupport implements ProgramFactsD
         Map mp = new LinkedHashMap();
         List lst = new ArrayList();
         JdbcTemplate jt = getJdbcTemplate();
+        
+        log.debug("SQL #getProductsByMarketAndDate: "+sql);
+        
         try 
         {
             lst = jt.query(sql, new RowMapperResultReader(new ProductMapper()));
